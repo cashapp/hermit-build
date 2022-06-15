@@ -1,0 +1,26 @@
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - jontirsen/2022-06-14/gpg
+jobs:
+  gpg:
+    name: Build GnuPG
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Init Hermit
+        run: ./bin/hermit env --raw >> $GITHUB_ENV
+      - name: Build
+        run: cd gpg && make
+      - name: Upload Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: gpg
+          allowUpdates: true
+          artifacts: "gpg/gnupg-*.tar.bz2"
+          token: ${{ secrets.GITHUB_TOKEN }}
