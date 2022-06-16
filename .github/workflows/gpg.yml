@@ -1,8 +1,5 @@
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - jontirsen/2022-06-14/gpg
 jobs:
   gpg:
     name: Build GnuPG

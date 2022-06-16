@@ -22,7 +22,7 @@ download:
 build:
 	mkdir -p $(dist)
 	cd $(build) && tar xjf $(archive_path)
-	cd $(build)/$(release) && ./configure --prefix="${dist}"
+	cd $(build)/$(release) && ./configure --with-included-gettext --prefix="${dist}"
 	cd $(build)/$(release) && make && make install
 
 package:
