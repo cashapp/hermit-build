@@ -1,0 +1,31 @@
+name: mysql client binaries lightweight packages
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - mysql
+jobs:
+  mysql-client:
+    strategy:
+      matrix:
+        binary: [mysql, mysqladmin]
+        arch: [x86_64, arm64]
+        version: [8.0.27, 8.0.28]
+    name: Make a lightweight package for the ${{ matrix.arch }} ${{ matrix.binary }} blnary v${{ matrix.version }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download source package
+        run: curl -SsfL "https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-${{ matrix.version }}-macos11-${{ matrix.arch }}.tar.gz" -o mysql-client.tar.gz
+      - name: Unpack source package
+        run: tar xzf mysql-client.tar.gz
+      - name: Remove unwanted binaries
+        run: pushd mysql-${{ matrix.version }}-macos11-${{ matrix.arch }}/bin/ && (ls -1 | grep -v '^${{ matrix.binary }}$' | xargs rm) && popd
+      - name: Repack package
+        run: tar czf ${{ matrix.binary }}-${{ matrix.version }}-macos11-${{ matrix.arch }}.tar.gz mysql-${{ matrix.version }}-macos11-${{ matrix.arch }}
+      - name: Upload Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: mysql-client
+          allowUpdates: true
+          artifacts: ${{ matrix.binary }}-${{ matrix.version }}-macos11-${{ matrix.arch }}.tar.gz
+          token: ${{ secrets.GITHUB_TOKEN }}
