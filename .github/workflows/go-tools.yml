@@ -7,8 +7,8 @@ on:
     # * is a special character in YAML so you have to quote this string
     - cron:  '0 12 * * *'
 jobs:
-  gotip:
-    name: Build Go Tip
+  go-tools:
+    name: Build Go Tools
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -20,11 +20,11 @@ jobs:
       - name: Init Hermit
         run: ./bin/hermit env --raw >> $GITHUB_ENV
       - name: Build Go
-        run: make GOOS=${{ matrix.os }} GOARCH=${{ matrix.arch }} -C gotip
+        run: make -C go-tools
       - name: Upload Release
         uses: ncipollo/release-action@v1
         with:
-          tag: gotip
+          tag: go-tools
           allowUpdates: true
-          artifacts: "gotip/go-*.tbz"
+          artifacts: "go-tools/*.bz2"
           token: ${{ secrets.GITHUB_TOKEN }}
