@@ -1,2 +1,3 @@
-gotip/goroot
-gotip/go-*
+/gotip/goroot
+/gotip/go-*
+/go-tools/*.bz2
