@@ -10,10 +10,6 @@ jobs:
   go-tools:
     name: Build Go Tools
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        arch: [arm64, amd64]
-        os: [linux, darwin]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
