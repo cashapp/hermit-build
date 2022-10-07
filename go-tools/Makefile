@@ -3,24 +3,21 @@ export GOARCH ?= $(shell go env GOARCH)
 
 SUFFIX = $(GOOS)-$(GOARCH)
 
-UNVERSIONED_TOOLS = golang.org/x/exp/cmd/apidiff 
+UNVERSIONED_TOOLS = golang.org/x/exp/cmd/apidiff
 TOOLS = golang.org/x/tools:cmd/stringer \
 	github.com/mailru/easyjson:easyjson
 
 all: sync
-	make GOOS=linux GOARCH=amd64 build
-	make GOOS=linux GOARCH=arm64 build
-	make GOOS=darwin GOARCH=amd64 build
-	make GOOS=darwin GOARCH=arm64 build
+	make GOOS=linux GOARCH=amd64 clean build
+	make GOOS=linux GOARCH=arm64 clean build
+	make GOOS=darwin GOARCH=amd64 clean build
+	make GOOS=darwin GOARCH=arm64 clean build
 
 sync:
 	test -r go.mod || go mod init install
-	go get $$(for tool in $(UNVERSIONED_TOOLS); do echo $$tool@latest; done)
-	go get $$(for tool in $(TOOLS); do \
-		echo $$(echo $$tool | tr : /)@latest; \
-	done)
+	go get $$(for tool in $(UNVERSIONED_TOOLS); do echo $$tool@latest; done) $$(for tool in $(TOOLS); do echo $$(echo $$tool | tr : /); done)
 
-build: clean
+build:
 	for tool in $(UNVERSIONED_TOOLS); do \
 		go build -o $$(basename $$tool)-$(SUFFIX) $$tool; \
 		bzip2 -9 $$(basename $$tool)-$(SUFFIX); \

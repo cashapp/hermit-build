@@ -22,5 +22,6 @@ jobs:
         with:
           tag: go-tools
           allowUpdates: true
+          replacesArtifacts: false
           artifacts: "go-tools/*.bz2"
           token: ${{ secrets.GITHUB_TOKEN }}
