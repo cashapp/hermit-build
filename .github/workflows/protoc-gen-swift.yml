@@ -1,8 +1,9 @@
+name: protoc-gen-swift
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'whcih swift-protobuf tag to build'
+        description: 'swift-protobuf tag to build'
         required: true
         type: string
 
