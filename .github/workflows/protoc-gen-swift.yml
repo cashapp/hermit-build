@@ -36,7 +36,6 @@ jobs:
       - name: Release
         uses: ncipollo/release-action@v1
         with:
-          name: protoc-gen-swift ${{ inputs.version }}
           tag: protoc-gen-swift/${{ inputs.version }}
           allowUpdates: true
           artifacts: protoc-gen-swift-${{ inputs.version }}-macos.tar.gz
