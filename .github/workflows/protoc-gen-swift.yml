@@ -1,0 +1,41 @@
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'whcih swift-protobuf tag to build'
+        required: true
+        type: string
+
+jobs:
+  protoc-gen-swift:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: apple/swift-protobuf
+          ref: ${{ inputs.version }}
+
+      - name: Build
+        run: swift build
+          --configuration release
+          --arch arm64
+          --arch x86_64
+
+      - name: Stage
+        run: mv
+          .build/apple/Products/Release/protoc-gen-swift
+          ./
+
+      - name: Package
+        run: tar czf
+          protoc-gen-swift-${{ inputs.version }}-macos.tar.gz
+          protoc-gen-swift
+
+      - name: Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: protoc-gen-swift
+          allowUpdates: true
+          artifacts: protoc-gen-swift-${{ inputs.version }}-macos.tar.gz
+          token: ${{ secrets.GITHUB_TOKEN }}
