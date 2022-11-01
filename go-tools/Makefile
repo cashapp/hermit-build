@@ -4,7 +4,8 @@ export GOARCH ?= $(shell go env GOARCH)
 SUFFIX = $(GOOS)-$(GOARCH)
 
 UNVERSIONED_TOOLS = golang.org/x/exp/cmd/apidiff \
-					github.com/robertkrimen/godocdown/godocdown
+					github.com/robertkrimen/godocdown/godocdown \
+					github.com/alvaroloes/enumer
 TOOLS = golang.org/x/tools:cmd/stringer \
 	github.com/mailru/easyjson:easyjson
 
