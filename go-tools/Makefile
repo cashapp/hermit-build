@@ -7,6 +7,7 @@ UNVERSIONED_TOOLS = golang.org/x/exp/cmd/apidiff \
 					github.com/robertkrimen/godocdown/godocdown \
 					github.com/alvaroloes/enumer
 TOOLS = golang.org/x/tools:cmd/stringer \
+	golang.org/x/tools:cmd/goimports \
 	github.com/mailru/easyjson:easyjson
 
 all: sync
