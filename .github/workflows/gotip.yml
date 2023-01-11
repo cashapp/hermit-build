@@ -1,3 +1,4 @@
+name: Build Go tip
 on:
   workflow_dispatch:
   push:

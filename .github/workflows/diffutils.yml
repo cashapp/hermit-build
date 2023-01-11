@@ -1,6 +1,12 @@
-name: Build gpg
+name: Build diffutils
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Version of diffutils"
+        required: true
+        default: 3.8
+        type: string
 jobs:
   gpg:
     name: Build GnuPG
@@ -14,11 +20,11 @@ jobs:
       - name: Init Hermit
         run: ./bin/hermit env --raw >> $GITHUB_ENV
       - name: Build
-        run: cd gpg && make
+        run: make VERSION=${{ inputs.version }} -C diffutils
       - name: Upload Release
         uses: ncipollo/release-action@v1
         with:
-          tag: gpg
+          tag: diffutils
           allowUpdates: true
-          artifacts: "gpg/gnupg-*.tar.bz2"
+          artifacts: "diffutils/diffutils-*.tar.xz"
           token: ${{ secrets.GITHUB_TOKEN }}

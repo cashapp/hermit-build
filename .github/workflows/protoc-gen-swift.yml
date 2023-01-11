@@ -1,4 +1,4 @@
-name: protoc-gen-swift
+name: Build protoc-gen-swift
 on:
   workflow_dispatch:
     inputs:
