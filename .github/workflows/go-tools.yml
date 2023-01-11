@@ -1,3 +1,4 @@
+name: Build Go tools
 on:
   workflow_dispatch:
   push:

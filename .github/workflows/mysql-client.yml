@@ -1,4 +1,4 @@
-name: mysql client binaries lightweight packages
+name: MySQL client binaries lightweight packages
 on:
   workflow_dispatch:
   push:

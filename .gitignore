@@ -1,3 +1,5 @@
 /gotip/goroot
 /gotip/go-*
 /go-tools/*.bz2
+*/build/*
+*/dist/*

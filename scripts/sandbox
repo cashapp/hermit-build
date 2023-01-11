@@ -1,0 +1,17 @@
+#!/bin/bash
+
+root="$( cd "$( dirname "${BASH_SOURCE[0]}" )"/.. && pwd )"
+
+case "$(uname -s)" in
+Darwin)
+  # This is to prevent builds using dependencies from /opt and /usr/local.
+  sandbox-exec -D TMPDIR="/private$TMPDIR" -D BUILD_DIR="${root}" -D HERMIT_STATE_DIR="${HOME}/Library/Caches/hermit" -f "${root}/sandbox.sb" "$@"
+  ;;
+*)
+  # Not ideal, in that we still might end up with extra dependencies, but at least they will be static.
+  export CFLAGS="-static"
+  export CXXFLAGS="-static"
+  export LDFLAGS="-static"
+  exec "$@"
+  ;;
+esac

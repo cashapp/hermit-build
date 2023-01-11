@@ -1,0 +1,36 @@
+(version 1)
+(deny default)
+(import "/System/Library/Sandbox/Profiles/bsd.sb")
+
+;(allow network* (local ip "localhost:*"))
+;(allow network* (remote ip "localhost:*"))
+(allow network* (remote unix-socket))
+
+(system-network)
+
+(allow mach-lookup
+  (global-name "com.apple.diagnosticd")
+  (global-name "com.apple.system.logger"))
+
+(allow file-read*)
+(deny file-read*
+  (subpath "/opt/")
+  (subpath "/usr/local/")
+)
+
+(deny file-write*)
+(allow file-write*
+  (subpath "/dev/")
+  (subpath "/tmp/")
+  (subpath (param "HERMIT_STATE_DIR"))
+  (subpath (param "TMPDIR"))
+  (subpath (param "BUILD_DIR"))
+)
+
+(allow process-exec*)
+(deny process-exec*
+  (subpath "/opt/")
+  (subpath "/usr/local/")
+)
+
+(allow process-fork)
