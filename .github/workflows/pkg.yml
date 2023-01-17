@@ -1,11 +1,10 @@
-name: Build diffutils
+name: Build package
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: "Version of diffutils"
+      package:
+        description: "Package to build"
         required: true
-        default: 3.8
         type: string
 jobs:
   gpg:
@@ -20,11 +19,11 @@ jobs:
       - name: Init Hermit
         run: ./bin/hermit env --raw >> $GITHUB_ENV
       - name: Build
-        run: make VERSION=${{ inputs.version }} -C diffutils
+        run: make -C pkgs/${{ inputs.package }}
       - name: Upload Release
         uses: ncipollo/release-action@v1
         with:
-          tag: diffutils
+          tag: ${{ inputs.package }}
           allowUpdates: true
-          artifacts: "diffutils/diffutils-*.tar.xz"
+          artifacts: "pkgs/${{ inputs.package }}/${{ inputs.package }}-*.tar.xz"
           token: ${{ secrets.GITHUB_TOKEN }}

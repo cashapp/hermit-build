@@ -3,3 +3,4 @@
 /go-tools/*.bz2
 */build/*
 */dist/*
+*/deps/*

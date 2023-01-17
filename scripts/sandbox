@@ -1,6 +1,6 @@
 #!/bin/bash
 
-root="$( cd "$( dirname "${BASH_SOURCE[0]}" )"/.. && pwd )"
+root="$(git rev-parse --show-toplevel)"
 
 case "$(uname -s)" in
 Darwin)
