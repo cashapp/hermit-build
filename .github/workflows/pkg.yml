@@ -6,6 +6,10 @@ on:
         description: "Package to build"
         required: true
         type: string
+      version:
+        description: "Version to build"
+        required: true
+        type: string
 jobs:
   gpg:
     name: Build
@@ -19,11 +23,11 @@ jobs:
       - name: Init Hermit
         run: ./bin/hermit env --raw >> $GITHUB_ENV
       - name: Build
-        run: make -C pkgs/${{ inputs.package }}
+        run: make VERSION=${{ inputs.version }} -C pkgs/${{ inputs.package }}
       - name: Upload Release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ inputs.package }}
+          tag: ${{ inputs.package }}-${{ inputs.version }}
           allowUpdates: true
-          artifacts: "pkgs/${{ inputs.package }}/${{ inputs.package }}-*.tar.xz"
+          artifacts: "pkgs/${{ inputs.package }}/${{ inputs.package }}-${{ inputs.version }}-*.tar.xz"
           token: ${{ secrets.GITHUB_TOKEN }}
