@@ -8,7 +8,7 @@ configure:
 	./configure --prefix=/ --disable-rpath
 
 build:
-	$(MAKE) -j8
+	$(MAKE)
 
 install:
 	$(MAKE) DESTDIR=$(DESTDIR) install

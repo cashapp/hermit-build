@@ -5,7 +5,7 @@ SOURCE = https://ftpmirror.gnu.org/make/make-$(VERSION).tar.gz
 include $(shell git rev-parse --show-toplevel)/pkgs/build.mk
 
 configure:
-	./configure --prefix=/ --disable-rpath
+	./configure --prefix=/ --disable-shared
 
 build:
 	$(MAKE)
