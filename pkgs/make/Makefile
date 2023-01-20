@@ -2,6 +2,11 @@ VERSION ?= 4.4
 NAME = make
 SOURCE = https://ftpmirror.gnu.org/make/make-$(VERSION).tar.gz
 
+# Disable -static because it breaks make
+override undefine CFLAGS
+override undefine CXXFLAGS
+override undefine LDFLAGS
+
 include $(shell git rev-parse --show-toplevel)/pkgs/build.mk
 
 configure:
