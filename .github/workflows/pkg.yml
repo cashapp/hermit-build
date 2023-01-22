@@ -11,13 +11,25 @@ on:
         required: true
         type: string
 jobs:
-  gpg:
+  pkg:
     name: Build
     runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
     strategy:
       matrix:
-        os: [ubuntu-18.04, macos-12]
+        include:
+          - os: ubuntu-18.04
+            # To ensure binaries built are compatible with Block's Kochiku worker environment
+            container: centos:centos7
+          - os: macos-12
     steps:
+      - name: Install required dependencies on CentOS
+        if: startsWith(matrix.container, 'centos')
+        # Endpoint repo is required to get recent version of git so checkout action will checkout code
+        # as a local git repo instead of falling back to downloading the repo's files using the GitHub REST API
+        run: |
+          yum install --assumeyes https://packages.endpointdev.com/rhel/7/os/x86_64/endpoint-repo.x86_64.rpm
+          yum install --assumeyes git gcc
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Init Hermit
