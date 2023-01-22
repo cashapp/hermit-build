@@ -30,8 +30,12 @@ jobs:
         run: |
           yum install --assumeyes https://packages.endpointdev.com/rhel/7/os/x86_64/endpoint-repo.x86_64.rpm
           yum install --assumeyes git gcc
+      # Work-around for https://github.com/actions/runner-images/issues/6775
+      - name: Change Owner of Container Working Directory
+        if: matrix.container
+        run: chown root:root .
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Init Hermit
         run: ./bin/hermit env --raw >> $GITHUB_ENV
       - name: Build
