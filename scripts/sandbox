@@ -9,9 +9,9 @@ Darwin)
   ;;
 *)
   # Not ideal, in that we still might end up with extra dependencies, but at least they will be static.
-  export CFLAGS="-static"
-  export CXXFLAGS="-static"
-  export LDFLAGS="-static"
+  #export CFLAGS="-static"
+  #export CXXFLAGS="-static"
+  #export LDFLAGS="-static"
   exec "$@"
   ;;
 esac
