@@ -25,11 +25,15 @@ jobs:
     steps:
       - name: Install required dependencies on CentOS
         if: startsWith(matrix.container, 'centos')
-        # Endpoint repo is required to get recent version of git so checkout action will checkout code
-        # as a local git repo instead of falling back to downloading the repo's files using the GitHub REST API
+        # 1. Endpoint repo is required to get recent version of git so checkout action will checkout code
+        #    as a local git repo instead of falling back to downloading the repo's files using the GitHub REST API
+        # 2. enable "software collections" (scl) repositories for extra packages
+        # 3. install newer gcc, etc in order to support newer C++ standards
+        # 4. python 3 is required by nodejs build
         run: |
           yum install --assumeyes https://packages.endpointdev.com/rhel/7/os/x86_64/endpoint-repo.x86_64.rpm
-          yum install --assumeyes git gcc
+          yum install -y centos-release-scl
+          yum install --assumeyes git gcc python3 devtoolset-11-gcc*
       # Work-around for https://github.com/actions/runner-images/issues/6775
       - name: Change Owner of Container Working Directory
         if: matrix.container
@@ -39,7 +43,9 @@ jobs:
       - name: Init Hermit
         run: ./bin/hermit env --raw >> $GITHUB_ENV
       - name: Build
-        run: make VERSION=${{ inputs.version }} -C pkgs/${{ inputs.package }}
+        run: |
+          if [ -f /opt/rh/devtoolset-11/enable ]; then . /opt/rh/devtoolset-11/enable; fi
+          make VERSION=${{ inputs.version }} -C pkgs/${{ inputs.package }}
       - name: Upload Release
         uses: ncipollo/release-action@v1
         with:
