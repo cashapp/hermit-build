@@ -18,6 +18,7 @@ DEPSDIR = $(TOPDIR)/$(NAME)/deps
 .PHONY: configure build install
 
 OUTPUT = $(NAME)-$(VERSION)-$(OS)-$(ARCH).tar.xz
+OUTPUT_DIRNAME = $(NAME)-$(VERSION)
 
 .PHONY: all
 all: $(OUTPUT)
@@ -39,8 +40,8 @@ $(OUTPUT): pkg.tar.gz
 	sandbox $(MAKE) -C build -f ../Makefile configure
 	sandbox $(MAKE) -C build -f ../Makefile build
 	sandbox $(MAKE) -C build -f ../Makefile install
-	cp -a dist $(NAME)-$(VERSION)
-	tar cfJ $(OUTPUT) $(NAME)-$(VERSION)
+	cp -a dist $(OUTPUT_DIRNAME)
+	tar cfJ $(OUTPUT) $(OUTPUT_DIRNAME)
 
 $(DEPS):
 	$(MAKE) -C ../$@
