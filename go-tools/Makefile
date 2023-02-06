@@ -8,7 +8,8 @@ UNVERSIONED_TOOLS = golang.org/x/exp/cmd/apidiff \
 TOOLS = golang.org/x/tools:cmd/stringer \
 	golang.org/x/tools:cmd/goimports \
 	github.com/mailru/easyjson:easyjson \
-	github.com/dmarkham/enumer
+	github.com/dmarkham/enumer \
+	github.com/planetscale/vtprotobuf:cmd/protoc-gen-go-vtproto
 
 all: sync
 	make GOOS=linux GOARCH=amd64 clean build
