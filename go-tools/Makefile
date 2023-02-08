@@ -9,7 +9,8 @@ TOOLS = golang.org/x/tools:cmd/stringer \
 	golang.org/x/tools:cmd/goimports \
 	github.com/mailru/easyjson:easyjson \
 	github.com/dmarkham/enumer \
-	github.com/planetscale/vtprotobuf:cmd/protoc-gen-go-vtproto
+	github.com/planetscale/vtprotobuf:cmd/protoc-gen-go-vtproto \
+	github.com/bufbuild/connect-go:cmd/protoc-gen-connect-go
 
 all: sync
 	make GOOS=linux GOARCH=amd64 clean build
