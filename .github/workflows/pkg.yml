@@ -12,7 +12,7 @@ on:
         type: string
 jobs:
   pkg:
-    name: Build
+    name: Build {{ inputs.package }}-${{ inputs.version }}
     runs-on: ${{ matrix.os }}
     container: ${{ matrix.container }}
     strategy:
