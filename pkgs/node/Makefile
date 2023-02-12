@@ -3,7 +3,7 @@
 # the build will take over 2 hours.
 VERSION ?= v18.13.0
 NAME = node
-SOURCE = https://nodejs.org/dist/${VERSION}/node-${VERSION}.tar.gz
+SOURCE = https://nodejs.org/dist/v$(VERSION)/node-v$(VERSION).tar.gz
 
 include $(shell git rev-parse --show-toplevel)/pkgs/build.mk
 
