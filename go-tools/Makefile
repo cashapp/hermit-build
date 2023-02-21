@@ -21,16 +21,18 @@ all: sync
 
 sync:
 	test -r go.mod || go mod init install
-	go get $$(for tool in $(UNVERSIONED_TOOLS); do echo $$tool@latest; done) $$(for tool in $(TOOLS); do echo $$(echo $$tool | tr : /); done)
+	#go get $$(for tool in $(UNVERSIONED_TOOLS); do echo $$tool@latest; done) $$(for tool in $(TOOLS); do echo $$(echo $$tool | tr : /); done)
 
 build:
 	for tool in $(UNVERSIONED_TOOLS); do \
+		go get $$tool; \
 		go build -o $$(basename $$tool)-$(SUFFIX) $$tool; \
 		bzip2 -9 $$(basename $$tool)-$(SUFFIX); \
 	done
 	for tool in $(TOOLS); do \
 		module=$$(echo $$tool | cut -d: -f1); \
 		version=$$(go list -m -f '{{ .Version }}' $$module); \
+		go get $$module; \
 		pkg=$$(echo $$tool | tr : /); \
 		binary=$$(echo $$pkg | awk -F / '{print $$NF}'); \
 		go build -o $$binary-$$version-$(SUFFIX) $$pkg; \
