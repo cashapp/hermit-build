@@ -47,4 +47,4 @@ $(DEPS):
 	$(MAKE) -C ../$@
 
 pkg.tar.gz:
-	curl -L $(SOURCE) -o pkg.tar.gz
+	curl -fsSL $(SOURCE) -o pkg.tar.gz
