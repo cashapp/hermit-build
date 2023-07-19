@@ -6,10 +6,6 @@ on:
         description: "Package to build"
         required: true
         type: string
-      version:
-        description: "Version to build"
-        required: true
-        type: string
 jobs:
   pkg:
     name: Build {{ inputs.package }}-${{ inputs.version }}
