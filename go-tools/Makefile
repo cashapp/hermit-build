@@ -11,7 +11,8 @@ TOOLS = golang.org/x/tools:cmd/stringer \
 	github.com/mailru/easyjson:easyjson \
 	github.com/dmarkham/enumer \
 	github.com/planetscale/vtprotobuf:cmd/protoc-gen-go-vtproto \
-	github.com/bufbuild/connect-go:cmd/protoc-gen-connect-go
+	github.com/bufbuild/connect-go:cmd/protoc-gen-connect-go \
+	github.com/jfeliu007/goplantuml:cmd/goplantuml
 
 all: sync
 	make GOOS=linux GOARCH=amd64 clean build
