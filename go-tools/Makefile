@@ -5,13 +5,15 @@ SUFFIX = $(GOOS)-$(GOARCH)
 
 UNVERSIONED_TOOLS = golang.org/x/exp/cmd/apidiff \
 					github.com/robertkrimen/godocdown/godocdown \
-					golang.org/x/vuln/cmd/govulncheck
+					golang.org/x/vuln/cmd/govulncheck \
+					github.com/kisielk/godepgraph
 TOOLS = golang.org/x/tools:cmd/stringer \
 	golang.org/x/tools:cmd/goimports \
 	github.com/mailru/easyjson:easyjson \
 	github.com/dmarkham/enumer \
 	github.com/planetscale/vtprotobuf:cmd/protoc-gen-go-vtproto \
-	github.com/bufbuild/connect-go:cmd/protoc-gen-connect-go
+	github.com/bufbuild/connect-go:cmd/protoc-gen-connect-go \
+	github.com/jfeliu007/goplantuml:cmd/goplantuml
 
 all: sync
 	make GOOS=linux GOARCH=amd64 clean build
