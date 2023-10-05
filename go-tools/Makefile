@@ -12,7 +12,7 @@ TOOLS = golang.org/x/tools:cmd/stringer \
 	github.com/mailru/easyjson:easyjson \
 	github.com/dmarkham/enumer \
 	github.com/planetscale/vtprotobuf:cmd/protoc-gen-go-vtproto \
-	github.com/bufbuild/connect-go:cmd/protoc-gen-connect-go \
+	connectrpc.com/connect:cmd/protoc-gen-connect-go \
 	github.com/jfeliu007/goplantuml:cmd/goplantuml
 
 all: sync
@@ -34,6 +34,7 @@ build:
 	for tool in $(TOOLS); do \
 		module=$$(echo $$tool | cut -d: -f1); \
 		version=$$(go list -m -f '{{ .Version }}' $$module); \
+		echo $$module-$$version; \
 		go get $$module; \
 		pkg=$$(echo $$tool | tr : /); \
 		binary=$$(echo $$pkg | awk -F / '{print $$NF}'); \

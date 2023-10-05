@@ -3,6 +3,7 @@ module install
 go 1.19
 
 require (
+	connectrpc.com/connect v1.11.1 // indirect
 	github.com/bufbuild/connect-go v1.10.0 // indirect
 	github.com/dmarkham/enumer v1.5.8 // indirect
 	github.com/jfeliu007/goplantuml v1.6.2 // indirect
