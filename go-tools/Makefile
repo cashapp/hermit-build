@@ -13,7 +13,8 @@ TOOLS = golang.org/x/tools:cmd/stringer \
 	github.com/dmarkham/enumer \
 	github.com/planetscale/vtprotobuf:cmd/protoc-gen-go-vtproto \
 	connectrpc.com/connect:cmd/protoc-gen-connect-go \
-	github.com/jfeliu007/goplantuml:cmd/goplantuml
+	github.com/jfeliu007/goplantuml:cmd/goplantuml \
+	github.com/buildpacks/scafall
 
 all: sync
 	make GOOS=linux GOARCH=amd64 clean build
