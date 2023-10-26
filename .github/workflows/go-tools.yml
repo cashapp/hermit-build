@@ -18,11 +18,19 @@ jobs:
         run: ./bin/hermit env --raw >> $GITHUB_ENV
       - name: Build Go
         run: make -C go-tools
-      - name: Upload Release
+      - name: Upload Versioned
         uses: ncipollo/release-action@v1
         with:
           tag: go-tools
           allowUpdates: true
           replacesArtifacts: false
           artifacts: "go-tools/*.bz2"
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Unversioned
+        uses: ncipollo/release-action@v1
+        with:
+          tag: go-tools
+          allowUpdates: true
+          replacesArtifacts: true
+          artifacts: "go-tools/unversioned/*.bz2"
           token: ${{ secrets.GITHUB_TOKEN }}

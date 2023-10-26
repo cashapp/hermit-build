@@ -1,3 +1,4 @@
+export CGO_ENABLED = 0
 export GOOS ?= $(shell go env GOOS)
 export GOARCH ?= $(shell go env GOARCH)
 
@@ -24,13 +25,14 @@ all: sync
 
 sync:
 	test -r go.mod || go mod init install
-	#go get $$(for tool in $(UNVERSIONED_TOOLS); do echo $$tool@latest; done) $$(for tool in $(TOOLS); do echo $$(echo $$tool | tr : /); done)
+	go get $$(for tool in $(UNVERSIONED_TOOLS); do echo $$tool@latest; done) $$(for tool in $(TOOLS); do echo $$(echo $$tool | tr : /); done)
 
 build:
+	mkdir -p unversioned
 	for tool in $(UNVERSIONED_TOOLS); do \
 		go get $$tool; \
-		go build -o $$(basename $$tool)-$(SUFFIX) $$tool; \
-		bzip2 -9 $$(basename $$tool)-$(SUFFIX); \
+		go build -o unversioned/$$(basename $$tool)-$(SUFFIX) $$tool; \
+		bzip2 -9 unversioned/$$(basename $$tool)-$(SUFFIX); \
 	done
 	for tool in $(TOOLS); do \
 		module=$$(echo $$tool | cut -d: -f1); \
@@ -44,4 +46,4 @@ build:
 	done
 
 clean:
-	rm -f *$(SUFFIX) *$(SUFFIX).bz2
+	rm -f *$(SUFFIX) *$(SUFFIX).bz2 unversioned/*$(SUFFIX).bz2

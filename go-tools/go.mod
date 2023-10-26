@@ -3,7 +3,7 @@ module install
 go 1.19
 
 require (
-	connectrpc.com/connect v1.11.1 // indirect
+	connectrpc.com/connect v1.12.0 // indirect
 	github.com/AlecAivazis/survey/v2 v2.3.6 // indirect
 	github.com/BurntSushi/toml v1.0.0 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
@@ -20,7 +20,7 @@ require (
 	github.com/cloudflare/circl v1.1.0 // indirect
 	github.com/coveooss/gotemplate/v3 v3.7.2 // indirect
 	github.com/coveooss/multilogger v0.5.2 // indirect
-	github.com/dmarkham/enumer v1.5.8 // indirect
+	github.com/dmarkham/enumer v1.5.9 // indirect
 	github.com/drhodes/goLorem v0.0.0-20220328165741-da82e5b29246 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/fatih/color v1.13.0 // indirect
