@@ -4,12 +4,12 @@ export GOARCH ?= $(shell go env GOARCH)
 
 SUFFIX = $(GOOS)-$(GOARCH)
 
-UNVERSIONED_TOOLS = golang.org/x/exp/cmd/apidiff \
-					github.com/robertkrimen/godocdown/godocdown \
-					golang.org/x/vuln/cmd/govulncheck \
-					github.com/kisielk/godepgraph \
-					github.com/subfuzion/envtpl/cmd/envtpl \
-					github.com/brendanjryan/k8split
+UNVERSIONED_TOOLS = golang.org/x/exp/cmd/apidiff@latest \
+					github.com/robertkrimen/godocdown/godocdown@latest \
+					golang.org/x/vuln/cmd/govulncheck@latest \
+					github.com/kisielk/godepgraph@latest \
+					github.com/subfuzion/envtpl/cmd/envtpl@latest \
+					github.com/brendanjryan/k8split@latest
 TOOLS = golang.org/x/tools:cmd/stringer \
 	golang.org/x/tools:cmd/goimports \
 	github.com/mailru/easyjson:easyjson \
@@ -27,11 +27,12 @@ all: sync
 
 sync:
 	test -r go.mod || go mod init install
-	go get $$(for tool in $(UNVERSIONED_TOOLS); do echo $$tool@latest; done) $$(for tool in $(TOOLS); do echo $$(echo $$tool | tr : /); done)
+	go get $$(for tool in $(UNVERSIONED_TOOLS); do echo $$tool; done) $$(for tool in $(TOOLS); do echo $$(echo $$tool | tr : /); done)
 
 build:
 	mkdir -p unversioned
 	for tool in $(UNVERSIONED_TOOLS); do \
+		tool=$${tool%@*}; \
 		go get $$tool; \
 		go build -o unversioned/$$(basename $$tool)-$(SUFFIX) $$tool; \
 		bzip2 -9 unversioned/$$(basename $$tool)-$(SUFFIX); \
