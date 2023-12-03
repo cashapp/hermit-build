@@ -10,8 +10,7 @@ UNVERSIONED_TOOLS = golang.org/x/exp/cmd/apidiff@latest \
 					github.com/kisielk/godepgraph@latest \
 					github.com/subfuzion/envtpl/cmd/envtpl@master \
 					github.com/brendanjryan/k8split@latest \
-					go.uber.org/nilaway/cmd/nilaway@latest \
-					braces.dev/errtrace@latest
+					go.uber.org/nilaway/cmd/nilaway@latest
 TOOLS = golang.org/x/tools:cmd/stringer \
 	golang.org/x/tools:cmd/goimports \
 	github.com/mailru/easyjson:easyjson \
@@ -19,7 +18,8 @@ TOOLS = golang.org/x/tools:cmd/stringer \
 	github.com/planetscale/vtprotobuf:cmd/protoc-gen-go-vtproto \
 	connectrpc.com/connect:cmd/protoc-gen-connect-go \
 	github.com/jfeliu007/goplantuml:cmd/goplantuml \
-	github.com/buildpacks/scafall
+	github.com/buildpacks/scafall \
+	braces.dev/errtrace:cmd/errtrace
 
 all: sync
 	make GOOS=linux GOARCH=amd64 clean build
