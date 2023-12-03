@@ -10,7 +10,8 @@ UNVERSIONED_TOOLS = golang.org/x/exp/cmd/apidiff@latest \
 					github.com/kisielk/godepgraph@latest \
 					github.com/subfuzion/envtpl/cmd/envtpl@master \
 					github.com/brendanjryan/k8split@latest \
-					go.uber.org/nilaway/cmd/nilaway@latest
+					go.uber.org/nilaway/cmd/nilaway@latest \
+					braces.dev/errtrace@latest
 TOOLS = golang.org/x/tools:cmd/stringer \
 	golang.org/x/tools:cmd/goimports \
 	github.com/mailru/easyjson:easyjson \
