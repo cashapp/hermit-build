@@ -4,11 +4,11 @@ export GOARCH ?= $(shell go env GOARCH)
 
 SUFFIX = $(GOOS)-$(GOARCH)
 
-UNVERSIONED_TOOLS = golang.org/x/exp/cmd/apidiff@latest \
+UNVERSIONED_TOOLS = github.com/subfuzion/envtpl/cmd/envtpl@master \
+					golang.org/x/exp/cmd/apidiff@latest \
 					github.com/robertkrimen/godocdown/godocdown@latest \
 					golang.org/x/vuln/cmd/govulncheck@latest \
 					github.com/kisielk/godepgraph@latest \
-					github.com/subfuzion/envtpl/cmd/envtpl@master \
 					github.com/brendanjryan/k8split@latest \
 					go.uber.org/nilaway/cmd/nilaway@latest
 TOOLS = github.com/deepmap/oapi-codegen/v2:cmd/oapi-codegen \
@@ -42,12 +42,13 @@ build:
 		bzip2 -9 $$binary-$$version-$(SUFFIX); \
 	done
 	mkdir -p unversioned
+	set -x; \
 	for tool in $(UNVERSIONED_TOOLS); do \
-		tool=$${tool%@*}; \
 		echo $$tool; \
 		rm -f go.mod go.sum; \
 		go mod init install; \
 		go get $$tool; \
+		tool=$${tool%@*}; \
 		go build -o unversioned/$$(basename $$tool)-$(SUFFIX) $$tool; \
 		bzip2 -9 unversioned/$$(basename $$tool)-$(SUFFIX); \
 	done
