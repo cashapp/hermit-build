@@ -20,7 +20,7 @@ TOOLS = golang.org/x/tools:cmd/stringer \
 	github.com/jfeliu007/goplantuml:cmd/goplantuml \
 	github.com/buildpacks/scafall \
 	braces.dev/errtrace:cmd/errtrace \
-	github.com/deepmap/oapi-codegen/v2/cmd/oapi-codegen
+	github.com/deepmap/oapi-codegen/v2:cmd/oapi-codegen
 
 all:
 	make GOOS=linux GOARCH=amd64 clean build
