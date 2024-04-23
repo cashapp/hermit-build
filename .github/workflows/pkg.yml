@@ -8,7 +8,7 @@ on:
         type: string
 jobs:
   pkg:
-    name: Build {{ inputs.package }}-${{ inputs.version }}
+    name: Build {{ inputs.package }}
     runs-on: ${{ matrix.os }}
     container: ${{ matrix.container }}
     strategy:
@@ -39,13 +39,16 @@ jobs:
       - name: Init Hermit
         run: ./bin/hermit env --raw >> $GITHUB_ENV
       - name: Build
+        id: build
         run: |
           if [ -f /opt/rh/devtoolset-11/enable ]; then . /opt/rh/devtoolset-11/enable; fi
-          make VERSION=${{ inputs.version }} -C pkgs/${{ inputs.package }}
+          make -C pkgs/${{ inputs.package }}
+          # Output version for release action
+          echo "version=$(make -C pkgs/${{ inputs.package }} version)" >> $GITHUB_ENV
       - name: Upload Release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ inputs.package }}-${{ inputs.version }}
+          tag: ${{ inputs.package }}-${{ steps.build.outputs.version }}
           allowUpdates: true
-          artifacts: "pkgs/${{ inputs.package }}/${{ inputs.package }}-${{ inputs.version }}-*.tar.xz"
+          artifacts: "pkgs/${{ inputs.package }}/${{ inputs.package }}-${{ steps.build.outputs.version }}-*.tar.xz"
           token: ${{ secrets.GITHUB_TOKEN }}

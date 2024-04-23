@@ -36,7 +36,7 @@ clean:
 $(OUTPUT): pkg.tar.gz
 	$(MAKE) clean deps
 	mkdir build dist
-	tar -C build --strip-components 1 -xf pkg.tar.gz 
+	tar -C build --strip-components 1 -xf pkg.tar.gz
 	sandbox $(MAKE) -C build -f ../Makefile configure
 	sandbox $(MAKE) -C build -f ../Makefile build
 	sandbox $(MAKE) -C build -f ../Makefile install
@@ -48,3 +48,6 @@ $(DEPS):
 
 pkg.tar.gz:
 	curl -fsSL $(SOURCE) -o pkg.tar.gz
+
+version:
+	@echo $(VERSION)
