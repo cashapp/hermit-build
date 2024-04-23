@@ -8,7 +8,7 @@ on:
         type: string
 jobs:
   pkg:
-    name: Build {{ inputs.package }}
+    name: Build
     runs-on: ${{ matrix.os }}
     container: ${{ matrix.container }}
     strategy:
@@ -37,18 +37,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Init Hermit
-        run: ./bin/hermit env --raw >> $GITHUB_ENV
+        uses: cashapp/activate-hermit@v1
       - name: Build
         id: build
         run: |
           if [ -f /opt/rh/devtoolset-11/enable ]; then . /opt/rh/devtoolset-11/enable; fi
           make -C pkgs/${{ inputs.package }}
-          # Output version for release action
-          echo "version=$(make -C pkgs/${{ inputs.package }} version)" >> $GITHUB_ENV
+          make -s -C pkgs/${{ inputs.package }} version
+          echo "VERSION=$(make -s -C pkgs/${{ inputs.package }} version)" >> $GITHUB_OUTPUT
       - name: Upload Release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ inputs.package }}-${{ steps.build.outputs.version }}
+          tag: ${{ inputs.package }}-${{ steps.build.outputs.VERSION }}
           allowUpdates: true
-          artifacts: "pkgs/${{ inputs.package }}/${{ inputs.package }}-${{ steps.build.outputs.version }}-*.tar.xz"
+          artifacts: "pkgs/${{ inputs.package }}/${{ inputs.package }}-${{ steps.build.outputs.VERSION }}-*.tar.xz"
           token: ${{ secrets.GITHUB_TOKEN }}
