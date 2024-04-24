@@ -46,7 +46,8 @@ jobs:
           make -s -C pkgs/${{ inputs.package }} version
           echo "VERSION=$(make -s -C pkgs/${{ inputs.package }} version)" >> $GITHUB_OUTPUT
       - name: Upload Release
-        uses: ncipollo/release-action@v1
+        # Use old version of the release-action, as newer releases use node-20 which is not compatible with CentOS 7
+        uses: ncipollo/release-action@8c78ca2662b7f5b8d5e5d5b5dbad3a5f38911fc0
         with:
           tag: ${{ inputs.package }}-${{ steps.build.outputs.VERSION }}
           allowUpdates: true
