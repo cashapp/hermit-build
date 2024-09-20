@@ -1,6 +1,7 @@
 TOPDIR = $(shell git rev-parse --show-toplevel)/pkgs
 OS = $(shell go env GOOS)
 ARCH = $(shell go env GOARCH)
+MAKEFLAGS = -j$(shell nproc 2> /dev/null || sysctl -n hw.ncpu)
 
 ifndef NAME
 $(error NAME is not set)

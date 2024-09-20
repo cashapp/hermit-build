@@ -4,3 +4,6 @@
 **/build/
 **/dist/
 **/deps/
+*.tgz
+*.zip
+*.tar.*
