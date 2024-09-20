@@ -27,8 +27,14 @@ jobs:
         # 3. install newer gcc, etc in order to support newer C++ standards
         # 4. python 3 is required by nodejs build
         run: |
-          yum install --assumeyes https://packages.endpointdev.com/rhel/7/os/x86_64/endpoint-repo.x86_64.rpm
-          yum install -y centos-release-scl
+          set -euxo pipefail
+          curl -LO https://packages.endpointdev.com/endpoint-rpmsign-7.pub
+          rpm --import endpoint-rpmsign-7.pub
+          yum install --assumeyes  https://packages.endpointdev.com/rhel/7/os/x86_64/endpoint-repo.x86_64.rpm
+          sed -i s/mirror.centos.org/vault.centos.org/g /etc/yum.repos.d/CentOS-*.repo
+          sed -i s/^#.*baseurl=http/baseurl=http/g /etc/yum.repos.d/CentOS-*.repo
+          sed -i s/^mirrorlist=http/#mirrorlist=http/g /etc/yum.repos.d/CentOS-*.repo
+          yum install --assumeyes  centos-release-scl
           yum install --assumeyes git gcc python3 devtoolset-11-gcc*
       # Work-around for https://github.com/actions/runner-images/issues/6775
       - name: Change Owner of Container Working Directory
