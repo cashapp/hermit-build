@@ -6,18 +6,22 @@ on:
       - gotip
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '0 12 * * *'
+    - cron: "0 12 * * *"
 jobs:
   go-tools:
     name: Build Go Tools
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux, darwin]
+        goarch: [amd64, arm64]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Init Hermit
         run: ./bin/hermit env --raw >> $GITHUB_ENV
       - name: Build Go
-        run: make -C go-tools
+        run: make GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} -C go-tools build
       - name: Upload Versioned
         uses: ncipollo/release-action@v1
         with:
