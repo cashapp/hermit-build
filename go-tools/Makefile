@@ -11,7 +11,8 @@ UNVERSIONED_TOOLS = github.com/subfuzion/envtpl/cmd/envtpl@master \
 					github.com/kisielk/godepgraph@latest \
 					github.com/brendanjryan/k8split@latest \
 					go.uber.org/nilaway/cmd/nilaway@latest
-TOOLS = github.com/google/wire:cmd/wire \
+TOOLS =  github.com/99designs/gqlgen \
+	github.com/google/wire:cmd/wire \
 	github.com/deepmap/oapi-codegen/v2:cmd/oapi-codegen \
 	golang.org/x/tools:cmd/stringer \
 	golang.org/x/tools:cmd/goimports \
