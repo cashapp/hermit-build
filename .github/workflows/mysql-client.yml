@@ -57,7 +57,7 @@ jobs:
     strategy:
       matrix:
         binary: [mysql, mysqladmin]
-        arch: [amd64, arm64]
+        arch: [amd64]
         version: [8.0.36]
     name: Make a package with the mysql client binaries ${{ matrix.binary }} for ubuntu 20.04 and 22.04
     runs-on: ubuntu-latest
