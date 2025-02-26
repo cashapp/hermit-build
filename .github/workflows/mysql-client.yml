@@ -118,5 +118,5 @@ jobs:
         with:
           tag: mysql-client
           allowUpdates: true
-          artifacts: ${{ matrix.binary }}-${{ matrix.version }}-ubuntu_multirelease-${{ matrix.arch }}.tar.gz
+          artifacts: ${{ matrix.binary }}-${{ matrix.version }}-linux-generic-${{ matrix.arch }}.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
