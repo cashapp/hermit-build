@@ -64,7 +64,12 @@ jobs:
     steps:
       - name: Download source packagess
         run: |
-          curl -SsfL "https://cdn.mysql.com/archives/mysql-8.0/mysql-${{ matrix.version }}-linux-glibc2.28-${{ matrix.arch }}.tar.xz" -o linux-generic.tar.xz
+          if [[ ${{ matrix.arch }} == "x86_64" ]]; then
+            GLIBC="2.12"
+          elif [[ ${{ matrix.arch }} == "aarch64" ]]; then
+            GLIBC="2.17"
+          fi
+          curl -SsfL "https://cdn.mysql.com/archives/mysql-8.0/mysql-${{ matrix.version }}-linux-glibc${GLIBC}-${{ matrix.arch }}.tar.xz" -o linux-generic.tar.xz
       - name: Unpack source packages
         run: |
           mkdir linux-generic
