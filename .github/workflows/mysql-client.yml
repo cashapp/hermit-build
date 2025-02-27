@@ -57,37 +57,28 @@ jobs:
     strategy:
       matrix:
         binary: [mysql, mysqladmin]
-        arch: [amd64]
+        arch: [x86_64,aarch64]
         version: [8.0.36]
-    name: Make a package with the mysql client binaries ${{ matrix.binary }} for ubuntu 20.04 and 22.04
+    name: Make a package with the mysql client binaries ${{ matrix.binary }} for generic linux
     runs-on: ubuntu-latest
     steps:
       - name: Download source packagess
         run: |
-          if [[ ${{ matrix.binary }} == "mysql" ]]; then
-            LIB="client-core"
-          elif [[ ${{ matrix.binary }} == "mysqladmin" ]]; then
-            LIB="client"
-          fi
-          curl -SsfL "https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-community-${LIB}_${{ matrix.version }}-1ubuntu20.04_${{ matrix.arch }}.deb" -o client-ubuntu20.04.deb
-          curl -SsfL "https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-community-${LIB}_${{ matrix.version }}-1ubuntu22.04_${{ matrix.arch }}.deb" -o client-ubuntu22.04.deb
+          curl -SsfL "https://cdn.mysql.com/archives/mysql-8.0/mysql-${{ matrix.version }}-linux-glibc2.28-${{ matrix.arch }}.tar.xz" -o linux-generic.tar.xz
       - name: Unpack source packages
         run: |
-          mkdir 20.04
-          dpkg-deb --extract client-ubuntu20.04.deb 20.04/
-          mkdir 22.04
-          dpkg-deb --extract client-ubuntu22.04.deb 22.04/
+          mkdir linux-generic
+          tar -xf linux-generic.tar.xz -C linux-generic --strip-components 1
       - name: Copy desired binaries to clean bin folder
         run: |
           mkdir bin
-          cp 20.04/usr/bin/${{ matrix.binary }} bin/${{ matrix.binary }}-20.04
-          cp 22.04/usr/bin/${{ matrix.binary }} bin/${{ matrix.binary }}-22.04
+          cp linux-generic/bin/${{ matrix.binary }} bin/${{ matrix.binary }}
       - name: Repack package
-        run: tar czf ${{ matrix.binary }}-${{ matrix.version }}-ubuntu_multirelease-${{ matrix.arch }}.tar.gz bin
+        run: tar czf ${{ matrix.binary }}-${{ matrix.version }}-linux-generic-${{ matrix.arch }}.tar.gz bin
       - name: Upload Release
         uses: ncipollo/release-action@v1
         with:
           tag: mysql-client
           allowUpdates: true
-          artifacts: ${{ matrix.binary }}-${{ matrix.version }}-ubuntu_multirelease-${{ matrix.arch }}.tar.gz
+          artifacts: ${{ matrix.binary }}-${{ matrix.version }}-linux-generic-${{ matrix.arch }}.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
