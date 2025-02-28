@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - mysql
+
 jobs:
   mysql-client-macos11:
     strategy:
@@ -11,48 +12,88 @@ jobs:
         binary: [mysql, mysqladmin]
         arch: [x86_64, arm64]
         version: [8.0.27, 8.0.28]
-    name: Make a lightweight package for the ${{ matrix.arch }} ${{ matrix.binary }} blnary v${{ matrix.version }}
+    name: Make a lightweight package for the ${{ matrix.arch }} ${{ matrix.binary }} binary v${{ matrix.version }}
     runs-on: ubuntu-latest
     steps:
-      - name: Download source package
-        run: curl -SsfL "https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-${{ matrix.version }}-macos11-${{ matrix.arch }}.tar.gz" -o mysql-client.tar.gz
-      - name: Unpack source package
-        run: tar xzf mysql-client.tar.gz
-      - name: Remove unwanted binaries
-        run: pushd mysql-${{ matrix.version }}-macos11-${{ matrix.arch }}/bin/ && (ls -1 | grep -v '^${{ matrix.binary }}$' | xargs rm) && popd
-      - name: Repack package
-        run: tar czf ${{ matrix.binary }}-${{ matrix.version }}-macos11-${{ matrix.arch }}.tar.gz mysql-${{ matrix.version }}-macos11-${{ matrix.arch }}
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Package
+        uses: ./.github/actions/mysql-macos
+        id: build
+        with:
+          binary: ${{ matrix.binary }}
+          version: ${{ matrix.version }}
+          arch: ${{ matrix.arch }}
+          platform: macos11
+
+      - name: Rebuild Package
+        uses: ./.github/actions/mysql-macos
+        id: rebuild
+        with:
+          binary: ${{ matrix.binary }}
+          version: ${{ matrix.version }}
+          arch: ${{ matrix.arch }}
+          platform: macos11
+
+      - name: Verify Deterministic Build
+        uses: ./.github/actions/determinism-check
+        with:
+          sha1: ${{ steps.build.outputs.artifact_sha }}
+          sha2: ${{ steps.rebuild.outputs.artifact_sha }}
+
       - name: Upload Release
         uses: ncipollo/release-action@v1
         with:
           tag: mysql-client
           allowUpdates: true
-          artifacts: ${{ matrix.binary }}-${{ matrix.version }}-macos11-${{ matrix.arch }}.tar.gz
+          artifacts: ${{ steps.build.outputs.artifact_path }}
           token: ${{ secrets.GITHUB_TOKEN }}
+
   mysql-client-macos14:
     strategy:
       matrix:
         binary: [mysql, mysqladmin]
         arch: [x86_64, arm64]
         version: [8.0.36]
-    name: Make a lightweight package for the ${{ matrix.arch }} ${{ matrix.binary }} blnary v${{ matrix.version }}
+    name: Make a lightweight package for the ${{ matrix.arch }} ${{ matrix.binary }} binary v${{ matrix.version }}
     runs-on: ubuntu-latest
     steps:
-      - name: Download source package
-        run: curl -SsfL "https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-${{ matrix.version }}-macos14-${{ matrix.arch }}.tar.gz" -o mysql-client.tar.gz
-      - name: Unpack source package
-        run: tar xzf mysql-client.tar.gz
-      - name: Remove unwanted binaries
-        run: pushd mysql-${{ matrix.version }}-macos14-${{ matrix.arch }}/bin/ && (ls -1 | grep -v '^${{ matrix.binary }}$' | xargs rm) && popd
-      - name: Repack package
-        run: tar czf ${{ matrix.binary }}-${{ matrix.version }}-macos14-${{ matrix.arch }}.tar.gz mysql-${{ matrix.version }}-macos14-${{ matrix.arch }}
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Package
+        uses: ./.github/actions/mysql-macos
+        id: build
+        with:
+          binary: ${{ matrix.binary }}
+          version: ${{ matrix.version }}
+          arch: ${{ matrix.arch }}
+          platform: macos14
+
+      - name: Rebuild Package
+        uses: ./.github/actions/mysql-macos
+        id: rebuild
+        with:
+          binary: ${{ matrix.binary }}
+          version: ${{ matrix.version }}
+          arch: ${{ matrix.arch }}
+          platform: macos14
+
+      - name: Verify Deterministic Build
+        uses: ./.github/actions/determinism-check
+        with:
+          sha1: ${{ steps.build.outputs.artifact_sha }}
+          sha2: ${{ steps.rebuild.outputs.artifact_sha }}
+
       - name: Upload Release
         uses: ncipollo/release-action@v1
         with:
           tag: mysql-client
           allowUpdates: true
-          artifacts: ${{ matrix.binary }}-${{ matrix.version }}-macos14-${{ matrix.arch }}.tar.gz
+          artifacts: ${{ steps.build.outputs.artifact_path }}
           token: ${{ secrets.GITHUB_TOKEN }}
+
   mysql-client-linux:
     strategy:
       matrix:
@@ -62,37 +103,39 @@ jobs:
     name: Make a package with the mysql client binaries ${{ matrix.binary }} for ubuntu 20.04 and 22.04
     runs-on: ubuntu-latest
     steps:
-      - name: Download source packagess
-        run: |
-          if [[ ${{ matrix.binary }} == "mysql" ]]; then
-            LIB="client-core"
-          elif [[ ${{ matrix.binary }} == "mysqladmin" ]]; then
-            LIB="client"
-          fi
-          curl -SsfL "https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-community-${LIB}_${{ matrix.version }}-1ubuntu20.04_${{ matrix.arch }}.deb" -o client-ubuntu20.04.deb
-          curl -SsfL "https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-community-${LIB}_${{ matrix.version }}-1ubuntu22.04_${{ matrix.arch }}.deb" -o client-ubuntu22.04.deb
-      - name: Unpack source packages
-        run: |
-          mkdir 20.04
-          dpkg-deb --extract client-ubuntu20.04.deb 20.04/
-          mkdir 22.04
-          dpkg-deb --extract client-ubuntu22.04.deb 22.04/
-      - name: Copy desired binaries to clean bin folder
-        run: |
-          mkdir bin
-          cp 20.04/usr/bin/${{ matrix.binary }} bin/${{ matrix.binary }}-20.04
-          cp 22.04/usr/bin/${{ matrix.binary }} bin/${{ matrix.binary }}-22.04
-      - name: Repack package
-        run: tar czf ${{ matrix.binary }}-${{ matrix.version }}-ubuntu_multirelease-${{ matrix.arch }}.tar.gz bin
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Package
+        uses: ./.github/actions/mysql-linux
+        id: build
+        with:
+          binary: ${{ matrix.binary }}
+          version: ${{ matrix.version }}
+          arch: ${{ matrix.arch }}
+
+      - name: Rebuild Package
+        uses: ./.github/actions/mysql-linux
+        id: rebuild
+        with:
+          binary: ${{ matrix.binary }}
+          version: ${{ matrix.version }}
+          arch: ${{ matrix.arch }}
+
+      - name: Verify Deterministic Build
+        uses: ./.github/actions/determinism-check
+        with:
+          sha1: ${{ steps.build.outputs.artifact_sha }}
+          sha2: ${{ steps.rebuild.outputs.artifact_sha }}
+
       - name: Upload Release
         uses: ncipollo/release-action@v1
         with:
           tag: mysql-client
           allowUpdates: true
-          artifacts: ${{ matrix.binary }}-${{ matrix.version }}-ubuntu_multirelease-${{ matrix.arch }}.tar.gz
+          artifacts: ${{ steps.build.outputs.artifact_path }}
           token: ${{ secrets.GITHUB_TOKEN }}
-  # Use percona binaries for arm64 because linux-generic from mysql community requires
-  # dynamically linked ncurses. Hermit largely requires statically linked binaries.
+
   mysql-client-linux-arm:
     strategy:
       matrix:
@@ -102,27 +145,35 @@ jobs:
     name: Make a package with percona mysql client binaries ${{ matrix.binary }} for ubuntu 20.04 and 22.04
     runs-on: ubuntu-latest
     steps:
-      - name: Download source packagess
-        run: |
-          curl -SsfL "https://downloads.percona.com/downloads/percona-distribution-mysql-ps/percona-distribution-mysql-ps-8.0.40/binary/debian/focal/x86_64/percona-server-client_${{ matrix.version }}.focal_${{ matrix.arch }}.deb" -o client-ubuntu20.04.deb
-          curl -SsfL "https://downloads.percona.com/downloads/percona-distribution-mysql-ps/percona-distribution-mysql-ps-8.0.40/binary/debian/jammy/x86_64/percona-server-client_${{ matrix.version }}.jammy_${{ matrix.arch }}.deb" -o client-ubuntu22.04.deb
-      - name: Unpack source packages
-        run: |
-          mkdir 20.04
-          dpkg-deb --extract client-ubuntu20.04.deb 20.04/
-          mkdir 22.04
-          dpkg-deb --extract client-ubuntu22.04.deb 22.04/
-      - name: Copy desired binaries to clean bin folder
-        run: |
-          mkdir bin
-          cp 20.04/usr/bin/${{ matrix.binary }} bin/${{ matrix.binary }}-20.04
-          cp 22.04/usr/bin/${{ matrix.binary }} bin/${{ matrix.binary }}-22.04
-      - name: Repack package
-        run: tar czf percona-${{ matrix.binary }}-${{ matrix.version }}-ubuntu_multirelease-${{ matrix.arch }}.tar.gz bin
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Package
+        uses: ./.github/actions/mysql-percona
+        id: build
+        with:
+          binary: ${{ matrix.binary }}
+          version: ${{ matrix.version }}
+          arch: ${{ matrix.arch }}
+
+      - name: Rebuild Package
+        uses: ./.github/actions/mysql-percona
+        id: rebuild
+        with:
+          binary: ${{ matrix.binary }}
+          version: ${{ matrix.version }}
+          arch: ${{ matrix.arch }}
+
+      - name: Verify Deterministic Build
+        uses: ./.github/actions/determinism-check
+        with:
+          sha1: ${{ steps.build.outputs.artifact_sha }}
+          sha2: ${{ steps.rebuild.outputs.artifact_sha }}
+
       - name: Upload Release
         uses: ncipollo/release-action@v1
         with:
           tag: mysql-client
           allowUpdates: true
-          artifacts: percona-${{ matrix.binary }}-${{ matrix.version }}-ubuntu_multirelease-${{ matrix.arch }}.tar.gz
+          artifacts: ${{ steps.build.outputs.artifact_path }}
           token: ${{ secrets.GITHUB_TOKEN }}

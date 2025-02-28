@@ -1,0 +1,48 @@
+name: 'MySQL Client MacOS Build'
+description: 'Build a lightweight MySQL client package for MacOS'
+inputs:
+  binary:
+    description: 'The binary to include (mysql or mysqladmin)'
+    required: true
+  version:
+    description: 'MySQL version'
+    required: true
+  arch:
+    description: 'Architecture (x86_64 or arm64)'
+    required: true
+  platform:
+    description: 'Platform version (macos11 or macos14)'
+    required: true
+outputs:
+  artifact_path:
+    description: 'Path to the built artifact'
+    value: ${{ steps.build.outputs.artifact_path }}
+  artifact_sha:
+    description: 'SHA256 of the built artifact'
+    value: ${{ steps.build.outputs.artifact_sha }}
+runs:
+  using: "composite"
+  steps:
+    - name: Download source package
+      shell: bash
+      run: curl -SsfL "https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-${{ inputs.version }}-${{ inputs.platform }}-${{ inputs.arch }}.tar.gz" -o mysql-client.tar.gz
+
+    - name: Unpack source package
+      shell: bash
+      run: tar xzf mysql-client.tar.gz
+
+    - name: Remove unwanted binaries
+      shell: bash
+      run: |
+        pushd mysql-${{ inputs.version }}-${{ inputs.platform }}-${{ inputs.arch }}/bin/ && \
+        (ls -1 | grep -v '^${{ inputs.binary }}$' | xargs rm) && \
+        popd
+
+    - name: Repack package with deterministic settings
+      shell: bash
+      id: build
+      run: |
+        ARTIFACT_NAME="${{ inputs.binary }}-${{ inputs.version }}-${{ inputs.platform }}-${{ inputs.arch }}.tar.gz"
+        GZIP=-n tar --sort=name --mtime='2020-01-01 00:00:00' -czf "$ARTIFACT_NAME" mysql-${{ inputs.version }}-${{ inputs.platform }}-${{ inputs.arch }}
+        echo "artifact_path=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
+        echo "artifact_sha=$(sha256sum $ARTIFACT_NAME | cut -d' ' -f1)" >> $GITHUB_OUTPUT
