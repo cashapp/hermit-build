@@ -20,8 +20,8 @@ jobs:
         run: tar xzf mysql-client.tar.gz
       - name: Remove unwanted binaries
         run: pushd mysql-${{ matrix.version }}-macos11-${{ matrix.arch }}/bin/ && (ls -1 | grep -v '^${{ matrix.binary }}$' | xargs rm) && popd
-      - name: Repack package
-        run: tar czf ${{ matrix.binary }}-${{ matrix.version }}-macos11-${{ matrix.arch }}.tar.gz mysql-${{ matrix.version }}-macos11-${{ matrix.arch }}
+      - name: Repack package with deterministic settings
+        run: GZIP=-n tar --sort=name --mtime='2020-01-01 00:00:00' -czf ${{ matrix.binary }}-${{ matrix.version }}-macos11-${{ matrix.arch }}.tar.gz mysql-${{ matrix.version }}-macos11-${{ matrix.arch }}
       - name: Upload Release
         uses: ncipollo/release-action@v1
         with:
@@ -44,8 +44,8 @@ jobs:
         run: tar xzf mysql-client.tar.gz
       - name: Remove unwanted binaries
         run: pushd mysql-${{ matrix.version }}-macos14-${{ matrix.arch }}/bin/ && (ls -1 | grep -v '^${{ matrix.binary }}$' | xargs rm) && popd
-      - name: Repack package
-        run: tar czf ${{ matrix.binary }}-${{ matrix.version }}-macos14-${{ matrix.arch }}.tar.gz mysql-${{ matrix.version }}-macos14-${{ matrix.arch }}
+      - name: Repack package with deterministic settings
+        run: GZIP=-n tar --sort=name --mtime='2020-01-01 00:00:00' -czf ${{ matrix.binary }}-${{ matrix.version }}-macos14-${{ matrix.arch }}.tar.gz mysql-${{ matrix.version }}-macos14-${{ matrix.arch }}
       - name: Upload Release
         uses: ncipollo/release-action@v1
         with:
@@ -82,12 +82,47 @@ jobs:
           mkdir bin
           cp 20.04/usr/bin/${{ matrix.binary }} bin/${{ matrix.binary }}-20.04
           cp 22.04/usr/bin/${{ matrix.binary }} bin/${{ matrix.binary }}-22.04
-      - name: Repack package
-        run: tar czf ${{ matrix.binary }}-${{ matrix.version }}-ubuntu_multirelease-${{ matrix.arch }}.tar.gz bin
+      - name: Repack package with deterministic settings
+        run: GZIP=-n tar --sort=name --mtime='2020-01-01 00:00:00' -czf ${{ matrix.binary }}-${{ matrix.version }}-ubuntu_multirelease-${{ matrix.arch }}.tar.gz bin
       - name: Upload Release
         uses: ncipollo/release-action@v1
         with:
           tag: mysql-client
           allowUpdates: true
           artifacts: ${{ matrix.binary }}-${{ matrix.version }}-ubuntu_multirelease-${{ matrix.arch }}.tar.gz
+          token: ${{ secrets.GITHUB_TOKEN }}
+  # Use percona binaries for arm64 because linux-generic from mysql community requires
+  # dynamically linked ncurses. Hermit largely requires statically linked binaries.
+  mysql-client-linux-arm:
+    strategy:
+      matrix:
+        binary: [mysql, mysqladmin]
+        arch: [arm64]
+        version: [8.0.40-31-1]
+    name: Make a package with percona mysql client binaries ${{ matrix.binary }} for ubuntu 20.04 and 22.04
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download source packagess
+        run: |
+          curl -SsfL "https://downloads.percona.com/downloads/percona-distribution-mysql-ps/percona-distribution-mysql-ps-8.0.40/binary/debian/focal/x86_64/percona-server-client_${{ matrix.version }}.focal_${{ matrix.arch }}.deb" -o client-ubuntu20.04.deb
+          curl -SsfL "https://downloads.percona.com/downloads/percona-distribution-mysql-ps/percona-distribution-mysql-ps-8.0.40/binary/debian/jammy/x86_64/percona-server-client_${{ matrix.version }}.jammy_${{ matrix.arch }}.deb" -o client-ubuntu22.04.deb
+      - name: Unpack source packages
+        run: |
+          mkdir 20.04
+          dpkg-deb --extract client-ubuntu20.04.deb 20.04/
+          mkdir 22.04
+          dpkg-deb --extract client-ubuntu22.04.deb 22.04/
+      - name: Copy desired binaries to clean bin folder
+        run: |
+          mkdir bin
+          cp 20.04/usr/bin/${{ matrix.binary }} bin/${{ matrix.binary }}-20.04
+          cp 22.04/usr/bin/${{ matrix.binary }} bin/${{ matrix.binary }}-22.04
+      - name: Repack package with deterministic settings
+        run: GZIP=-n tar --sort=name --mtime='2020-01-01 00:00:00' -czf percona-${{ matrix.binary }}-${{ matrix.version }}-ubuntu_multirelease-${{ matrix.arch }}.tar.gz bin
+      - name: Upload Release.
+        uses: ncipollo/release-action@v1
+        with:
+          tag: mysql-client
+          allowUpdates: true
+          artifacts: percona-${{ matrix.binary }}-${{ matrix.version }}-ubuntu_multirelease-${{ matrix.arch }}.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
