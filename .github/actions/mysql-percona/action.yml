@@ -1,0 +1,51 @@
+name: 'Percona MySQL Client Build'
+description: 'Build a lightweight Percona MySQL client package for Linux'
+inputs:
+  binary:
+    description: 'The binary to include (mysql or mysqladmin)'
+    required: true
+  version:
+    description: 'MySQL version'
+    required: true
+  arch:
+    description: 'Architecture (arm64)'
+    required: true
+outputs:
+  artifact_path:
+    description: 'Path to the built artifact'
+    value: ${{ steps.build.outputs.artifact_path }}
+  artifact_sha:
+    description: 'SHA256 of the built artifact'
+    value: ${{ steps.build.outputs.artifact_sha }}
+runs:
+  using: "composite"
+  steps:
+    - name: Download source packages
+      shell: bash
+      run: |
+        curl -SsfL "https://downloads.percona.com/downloads/percona-distribution-mysql-ps/percona-distribution-mysql-ps-8.0.40/binary/debian/focal/x86_64/percona-server-client_${{ inputs.version }}.focal_${{ inputs.arch }}.deb" -o client-ubuntu20.04.deb
+        curl -SsfL "https://downloads.percona.com/downloads/percona-distribution-mysql-ps/percona-distribution-mysql-ps-8.0.40/binary/debian/jammy/x86_64/percona-server-client_${{ inputs.version }}.jammy_${{ inputs.arch }}.deb" -o client-ubuntu22.04.deb
+
+    - name: Unpack source packages
+      shell: bash
+      run: |
+        mkdir -p 20.04
+        dpkg-deb --extract client-ubuntu20.04.deb 20.04/
+        mkdir -p 22.04
+        dpkg-deb --extract client-ubuntu22.04.deb 22.04/
+
+    - name: Copy desired binaries to clean bin folder
+      shell: bash
+      run: |
+        mkdir -p bin
+        cp 20.04/usr/bin/${{ inputs.binary }} bin/${{ inputs.binary }}-20.04
+        cp 22.04/usr/bin/${{ inputs.binary }} bin/${{ inputs.binary }}-22.04
+
+    - name: Repack package with deterministic settings
+      shell: bash
+      id: build
+      run: |
+        ARTIFACT_NAME="percona-${{ inputs.binary }}-${{ inputs.version }}-ubuntu_multirelease-${{ inputs.arch }}.tar.gz"
+        source scripts/commons && deterministic_tar "$ARTIFACT_NAME" bin
+        echo "artifact_path=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
+        echo "artifact_sha=$(sha256sum $ARTIFACT_NAME | cut -d' ' -f1)" >> $GITHUB_OUTPUT
