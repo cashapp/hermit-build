@@ -43,6 +43,6 @@ runs:
       id: build
       run: |
         ARTIFACT_NAME="${{ inputs.binary }}-${{ inputs.version }}-${{ inputs.platform }}-${{ inputs.arch }}.tar.gz"
-        GZIP=-n tar --sort=name --mtime='2020-01-01 00:00:00' -czf "$ARTIFACT_NAME" mysql-${{ inputs.version }}-${{ inputs.platform }}-${{ inputs.arch }}
+        source scripts/commons && deterministic_tar "$ARTIFACT_NAME" mysql-${{ inputs.version }}-${{ inputs.platform }}-${{ inputs.arch }}
         echo "artifact_path=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
         echo "artifact_sha=$(sha256sum $ARTIFACT_NAME | cut -d' ' -f1)" >> $GITHUB_OUTPUT
