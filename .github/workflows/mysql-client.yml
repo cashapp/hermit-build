@@ -103,33 +103,31 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Build Package
-        uses: ./.github/actions/mysql-percona
+      - name: Download source packages
+        run: |
+          curl -SsfL "https://downloads.percona.com/downloads/percona-distribution-mysql-ps/percona-distribution-mysql-ps-8.0.40/binary/debian/focal/x86_64/percona-server-client_${{ matrix.version }}.focal_${{ matrix.arch }}.deb" -o client-ubuntu20.04.deb
+          curl -SsfL "https://downloads.percona.com/downloads/percona-distribution-mysql-ps/percona-distribution-mysql-ps-8.0.40/binary/debian/jammy/x86_64/percona-server-client_${{ matrix.version }}.jammy_${{ matrix.arch }}.deb" -o client-ubuntu22.04.deb
+      - name: Unpack source packages
+        run: |
+          mkdir -p 20.04
+          dpkg-deb --extract client-ubuntu20.04.deb 20.04/
+          mkdir -p 22.04
+          dpkg-deb --extract client-ubuntu22.04.deb 22.04/
+      - name: Copy desired binaries to clean bin folder
+        run: |
+          mkdir -p bin
+          cp 20.04/usr/bin/${{ matrix.binary }} bin/${{ matrix.binary }}-20.04
+          cp 22.04/usr/bin/${{ matrix.binary }} bin/${{ matrix.binary }}-22.04
+      - name: Repack package with deterministic settings
+        shell: bash
         id: build
-        with:
-          binary: ${{ matrix.binary }}
-          version: ${{ matrix.version }}
-          arch: ${{ matrix.arch }}
-
-      - name: Rebuild Package
-        uses: ./.github/actions/mysql-percona
-        id: rebuild
-        with:
-          binary: ${{ matrix.binary }}
-          version: ${{ matrix.version }}
-          arch: ${{ matrix.arch }}
-
-      - name: Verify Deterministic Build
-        uses: ./.github/actions/determinism-check
-        with:
-          sha1: ${{ steps.build.outputs.artifact_sha }}
-          sha2: ${{ steps.rebuild.outputs.artifact_sha }}
-
+        run: |
+          source scripts/commons
+          deterministic_tar "percona-${{ matrix.binary }}-${{ matrix.version }}-ubuntu_multirelease-${{ matrix.arch }}.tar.gz" bin
       - name: Upload Release
         uses: ncipollo/release-action@v1
         with:
           tag: mysql-client
           allowUpdates: true
-          artifacts: ${{ steps.build.outputs.artifact_path }}
+          artifacts: percona-${{ matrix.binary }}-${{ matrix.version }}-ubuntu_multirelease-${{ matrix.arch }}.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
