@@ -40,13 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download source package
-        run: |
-          if [[ "${{ matrix.version }}" == "8.0.36" ]]; then
-            URL_PREFIX="https://dev.mysql.com/get/Downloads/MySQL-8.0"
-          else
-            URL_PREFIX="https://cdn.mysql.com/archives/mysql-8.0"
-          fi
-          curl -SsfL "${URL_PREFIX}/mysql-${{ matrix.version }}-macos14-${{ matrix.arch }}.tar.gz" -o mysql-client.tar.gz
+        run: curl -SsfL "https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-${{ matrix.version }}-macos14-${{ matrix.arch }}.tar.gz" -o mysql-client.tar.gz
       - name: Unpack source package
         run: tar xzf mysql-client.tar.gz
       - name: Remove unwanted binaries
@@ -65,7 +59,7 @@ jobs:
       matrix:
         binary: [mysql, mysqladmin]
         arch: [amd64]
-        version: [8.0.36,8.0.40]
+        version: [8.0.36, 8.0.40]
     name: Make a package with the mysql client binaries ${{ matrix.binary }} for ubuntu 20.04 and 22.04
     runs-on: ubuntu-latest
     steps:
@@ -76,13 +70,8 @@ jobs:
           elif [[ ${{ matrix.binary }} == "mysqladmin" ]]; then
             LIB="client"
           fi
-          if [[ "${{ matrix.version }}" == "8.0.36" ]]; then
-            URL_PREFIX="https://dev.mysql.com/get/Downloads/MySQL-8.0"
-          else
-            URL_PREFIX="https://cdn.mysql.com/archives/mysql-8.0"
-          fi
-          curl -SsfL "${URL_PREFIX}/mysql-community-${LIB}_${{ matrix.version }}-1ubuntu20.04_${{ matrix.arch }}.deb" -o client-ubuntu20.04.deb
-          curl -SsfL "${URL_PREFIX}/mysql-community-${LIB}_${{ matrix.version }}-1ubuntu22.04_${{ matrix.arch }}.deb" -o client-ubuntu22.04.deb
+          curl -SsfL "https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-community-${LIB}_${{ matrix.version }}-1ubuntu20.04_${{ matrix.arch }}.deb" -o client-ubuntu20.04.deb
+          curl -SsfL "https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-community-${LIB}_${{ matrix.version }}-1ubuntu22.04_${{ matrix.arch }}.deb" -o client-ubuntu22.04.deb
       - name: Unpack source packages
         run: |
           mkdir 20.04
