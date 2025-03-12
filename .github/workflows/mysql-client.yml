@@ -35,7 +35,7 @@ jobs:
       matrix:
         binary: [mysql, mysqladmin]
         arch: [x86_64, arm64]
-        version: [8.0.36]
+        version: [8.0.36, 8.0.40]
     name: Make a lightweight package for the ${{ matrix.arch }} ${{ matrix.binary }} binary v${{ matrix.version }}
     runs-on: ubuntu-latest
     steps:
@@ -59,7 +59,7 @@ jobs:
       matrix:
         binary: [mysql, mysqladmin]
         arch: [amd64]
-        version: [8.0.36]
+        version: [8.0.36, 8.0.40]
     name: Make a package with the mysql client binaries ${{ matrix.binary }} for ubuntu 20.04 and 22.04
     runs-on: ubuntu-latest
     steps:
