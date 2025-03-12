@@ -27,7 +27,8 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           tag: mysql-client
-          skipIfReleaseExists: true
+          allowUpdates: true
+          replacesArtifacts: false
           artifacts: ${{ matrix.binary }}-${{ matrix.version }}-macos11-${{ matrix.arch }}.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
   mysql-client-macos14:
@@ -51,7 +52,8 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           tag: mysql-client
-          skipIfReleaseExists: true
+          allowUpdates: true
+          replacesArtifacts: false
           artifacts: ${{ matrix.binary }}-${{ matrix.version }}-macos14-${{ matrix.arch }}.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
   mysql-client-linux:
@@ -89,7 +91,8 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           tag: mysql-client
-          skipIfReleaseExists: true
+          allowUpdates: true
+          replacesArtifacts: false
           artifacts: ${{ matrix.binary }}-${{ matrix.version }}-ubuntu_multirelease-${{ matrix.arch }}.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
   mysql-client-linux-arm:
