@@ -132,5 +132,6 @@ jobs:
         with:
           tag: mysql-client
           allowUpdates: true
+          replacesArtifacts: false
           artifacts: percona-${{ matrix.binary }}-${{ matrix.version }}-ubuntu_multirelease-${{ matrix.arch }}.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
