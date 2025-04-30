@@ -1,4 +1,4 @@
-VERSION ?= 7.1.0
+VERSION ?= 12.2.1
 NAME = graphviz
 SOURCE = https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/$(VERSION)/graphviz-$(VERSION).tar.xz
 
