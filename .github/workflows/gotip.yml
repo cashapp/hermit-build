@@ -27,5 +27,6 @@ jobs:
         with:
           tag: gotip
           allowUpdates: true
+          replacesArtifacts: false
           artifacts: "gotip/go-*.tbz"
           token: ${{ secrets.GITHUB_TOKEN }}
