@@ -31,5 +31,6 @@ jobs:
         with:
           tag: ${{ inputs.package }}-${{ steps.build.outputs.VERSION }}
           allowUpdates: true
+          replacesArtifacts: false
           artifacts: "pkgs/${{ inputs.package }}/${{ inputs.package }}-${{ steps.build.outputs.VERSION }}-*.tar.xz"
           token: ${{ secrets.GITHUB_TOKEN }}

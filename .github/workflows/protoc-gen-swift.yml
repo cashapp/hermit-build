@@ -39,5 +39,6 @@ jobs:
           name: protoc-gen-swift ${{ inputs.version }}
           tag: protoc-gen-swift-${{ inputs.version }}
           allowUpdates: true
+          replacesArtifacts: false
           artifacts: protoc-gen-swift-${{ inputs.version }}-macos.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}

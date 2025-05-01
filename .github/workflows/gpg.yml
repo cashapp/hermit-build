@@ -20,5 +20,6 @@ jobs:
         with:
           tag: gpg
           allowUpdates: true
+          replacesArtifacts: false
           artifacts: "gpg/gnupg-*.tar.bz2"
           token: ${{ secrets.GITHUB_TOKEN }}
