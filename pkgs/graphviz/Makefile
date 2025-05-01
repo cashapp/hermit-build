@@ -6,7 +6,7 @@ DEPS = libsodium libargon2
 include $(shell git rev-parse --show-toplevel)/pkgs/build.mk
 
 configure:
-	./configure --prefix=/
+	./configure --prefix=/ --enable-static=yes --disable-shared
 
 build:
 	$(MAKE)
