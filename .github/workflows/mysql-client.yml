@@ -24,7 +24,7 @@ jobs:
       - name: Repack package
         run: tar czf ${{ matrix.binary }}-${{ matrix.version }}-macos11-${{ matrix.arch }}.tar.gz mysql-${{ matrix.version }}-macos11-${{ matrix.arch }}
       - name: Upload Release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@440c8c1cb0ed28b9f43e4d1d670870f059653174 # ratchet:ncipollo/release-action@v1
         with:
           tag: mysql-client
           allowUpdates: true
@@ -49,7 +49,7 @@ jobs:
       - name: Repack package
         run: tar czf ${{ matrix.binary }}-${{ matrix.version }}-macos14-${{ matrix.arch }}.tar.gz mysql-${{ matrix.version }}-macos14-${{ matrix.arch }}
       - name: Upload Release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@440c8c1cb0ed28b9f43e4d1d670870f059653174 # ratchet:ncipollo/release-action@v1
         with:
           tag: mysql-client
           allowUpdates: true
@@ -88,7 +88,7 @@ jobs:
       - name: Repack package
         run: tar czf ${{ matrix.binary }}-${{ matrix.version }}-ubuntu_multirelease-${{ matrix.arch }}.tar.gz bin
       - name: Upload Release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@440c8c1cb0ed28b9f43e4d1d670870f059653174 # ratchet:ncipollo/release-action@v1
         with:
           tag: mysql-client
           allowUpdates: true
@@ -105,7 +105,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # ratchet:actions/checkout@v4
       - name: Download source packages
         run: |
           curl -SsfL "https://downloads.percona.com/downloads/percona-distribution-mysql-ps/percona-distribution-mysql-ps-8.0.40/binary/debian/focal/x86_64/percona-server-client_${{ matrix.version }}.focal_${{ matrix.arch }}.deb" -o client-ubuntu20.04.deb
@@ -128,7 +128,7 @@ jobs:
           source scripts/commons
           deterministic_tar "percona-${{ matrix.binary }}-${{ matrix.version }}-ubuntu_multirelease-${{ matrix.arch }}.tar.gz" bin
       - name: Upload Release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@440c8c1cb0ed28b9f43e4d1d670870f059653174 # ratchet:ncipollo/release-action@v1
         with:
           tag: mysql-client
           allowUpdates: true
