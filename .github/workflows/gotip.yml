@@ -27,6 +27,6 @@ jobs:
         with:
           tag: gotip
           allowUpdates: true
-          replacesArtifacts: false
+          replacesArtifacts: true  # Safe to replace; gotip has no checksum
           artifacts: "gotip/go-*.tbz"
           token: ${{ secrets.GITHUB_TOKEN }}
