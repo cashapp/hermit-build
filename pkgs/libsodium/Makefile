@@ -1,5 +1,5 @@
-VERSION ?= 1.0.20
 NAME = libsodium
+VERSION ?= 1.0.20
 SOURCE = https://download.libsodium.org/libsodium/releases/libsodium-$(VERSION)-stable.tar.gz
 
 include $(shell git rev-parse --show-toplevel)/pkgs/build.mk
