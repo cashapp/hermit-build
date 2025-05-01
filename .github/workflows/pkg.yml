@@ -14,9 +14,10 @@ jobs:
       matrix:
         # runner architecture defined here -> https://github.com/actions/runner-images
         os: [
-          ubuntu-22.04,   # linux-amd64
-          macos-13,       # darwin-amd64
-          macos-13-xlarge # darwin-arm64
+          ubuntu-22.04,     # linux-amd64
+          ubuntu-22.04-arm, # linux-arm64
+          macos-13,         # darwin-amd64
+          macos-13-xlarge   # darwin-arm64
         ]
     steps:
       - name: Checkout code

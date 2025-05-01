@@ -13,3 +13,4 @@ build:
 
 install:
 	$(MAKE) DESTDIR=$(DESTDIR) install
+	mv $(DESTDIR)/bin/dot_static $(DESTDIR)/bin/dot
