@@ -14,7 +14,6 @@
 
 (allow file-read*)
 (deny file-read*
-  (subpath "/opt/")
   (subpath "/usr/local/")
 )
 
@@ -29,7 +28,6 @@
 
 (allow process-exec*)
 (deny process-exec*
-  (subpath "/opt/")
   (subpath "/usr/local/")
 )
 
