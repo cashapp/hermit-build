@@ -10,7 +10,6 @@ jobs:
   pkg:
     name: Build
     runs-on: ${{ matrix.os }}
-    container: ${{ matrix.container }}
     strategy:
       matrix:
         os: [ubuntu-22.04, macos-13]

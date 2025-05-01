@@ -1,0 +1,11 @@
+#!/bin/bash
+set -euo pipefail
+
+if [ -z "${ALL_CHANGED_FILES++}" ]; then
+  echo "ALL_CHANGED_FILES is not set"
+  exit 1
+fi
+
+for pkg in "$(echo "$ALL_CHANGED_FILES" | grep ^pkgs/ | cut -d/ -f2 | sort | uniq)"; do
+  make -C "pkgs/${pkg}"
+done
