@@ -12,33 +12,33 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # ratchet:actions/checkout@v2
         with:
           repository: apple/swift-protobuf
           ref: ${{ inputs.version }}
 
       - name: Build
-        run: swift build
-          --configuration release
-          --arch arm64
-          --arch x86_64
-
+        run: swift build --configuration release --arch arm64 --arch x86_64
       - name: Stage
-        run: mv
-          .build/apple/Products/Release/protoc-gen-swift
-          ./
-
+        run: mv .build/apple/Products/Release/protoc-gen-swift ./
       - name: Package
-        run: tar czf
-          protoc-gen-swift-${{ inputs.version }}-macos.tar.gz
-          protoc-gen-swift
 
+        run: tar czf protoc-gen-swift-${{ inputs.version }}-macos.tar.gz protoc-gen-swift
       - name: Release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@440c8c1cb0ed28b9f43e4d1d670870f059653174 # ratchet:ncipollo/release-action@v1
         with:
+
           name: protoc-gen-swift ${{ inputs.version }}
           tag: protoc-gen-swift-${{ inputs.version }}
           allowUpdates: true
           replacesArtifacts: false
+
           artifacts: protoc-gen-swift-${{ inputs.version }}-macos.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
+
+
+
+
+
+
+
