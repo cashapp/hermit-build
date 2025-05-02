@@ -33,4 +33,18 @@
   (subpath "/usr/local/")
 )
 
+;; Allow brew installed `make`
+(allow file-read*
+  (subpath "/opt/homebrew/opt/make/")
+  (subpath "/opt/homebrew/Cellar/make/")
+  (subpath "/usr/local/opt/make/")
+  (subpath "/usr/local/Cellar/make/")
+)
+(allow process-exec*
+  (subpath "/opt/homebrew/opt/make/")
+  (subpath "/opt/homebrew/Cellar/make/")
+  (subpath "/usr/local/opt/make/")
+  (subpath "/usr/local/Cellar/make/")
+)
+
 (allow process-fork)
