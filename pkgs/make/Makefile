@@ -1,5 +1,5 @@
-VERSION ?= 4.4
 NAME = make
+VERSION ?= 4.4
 SOURCE = https://ftpmirror.gnu.org/make/make-$(VERSION).tar.gz
 
 # Disable -static because it breaks make

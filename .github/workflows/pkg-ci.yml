@@ -3,8 +3,16 @@ on:
   pull_request:
 jobs:
   build:
-    runs-on:
-      - ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        # runner architecture defined here -> https://github.com/actions/runner-images
+        os: [
+          ubuntu-22.04,     # linux-amd64
+          ubuntu-22.04-arm, # linux-arm64
+          macos-13,         # darwin-amd64
+          macos-13-xlarge   # darwin-arm64
+        ]
     steps:
       - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # ratchet:actions/checkout@v3
       - uses: cashapp/activate-hermit@e49f5cb4dd64ff0b0b659d1d8df499595451155a # ratchet:cashapp/activate-hermit@v1
