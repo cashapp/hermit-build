@@ -13,6 +13,12 @@ jobs:
         uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # ratchet:actions/checkout@v2
       - name: Init Hermit
         run: ./bin/hermit env --raw >> $GITHUB_ENV
+      - name: Update make (macos only)
+        if: runner.os == 'macOS'
+        run: |
+          brew update
+          brew install make
+          echo "$(brew --prefix make)/libexec/gnubin" >> $GITHUB_PATH
       - name: Build
         run: cd gpg && make
       - name: Upload Release
