@@ -22,7 +22,8 @@ TOOLS =  github.com/99designs/gqlgen \
 	connectrpc.com/connect:cmd/protoc-gen-connect-go \
 	github.com/jfeliu007/goplantuml:cmd/goplantuml \
 	github.com/buildpacks/scafall \
-	braces.dev/errtrace:cmd/errtrace
+	braces.dev/errtrace:cmd/errtrace \
+	github.com/axzilla/templui:cmd/templui
 
 all:
 	make GOOS=linux GOARCH=amd64 clean build
