@@ -13,7 +13,7 @@ UNVERSIONED_TOOLS = github.com/subfuzion/envtpl/cmd/envtpl@master \
 					go.uber.org/nilaway/cmd/nilaway@latest
 TOOLS =  github.com/99designs/gqlgen \
 	github.com/google/wire:cmd/wire \
-	github.com/deepmap/oapi-codegen/v2:cmd/oapi-codegen \
+	github.com/oapi-codegen/oapi-codegen/v2:cmd/oapi-codegen \
 	golang.org/x/tools:cmd/stringer \
 	golang.org/x/tools:cmd/goimports \
 	github.com/mailru/easyjson:easyjson \
